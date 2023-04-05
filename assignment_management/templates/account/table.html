@@ -1,0 +1,39 @@
+{% extends 'account/base.html' %}
+{% load static templatetags %}
+{% block mainpanel %}
+<div class="content-wrapper">
+    <div class="col-lg-12 grid-margin stretch-card">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title">{{title}}</h4>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    {% for key,val in headers.items %}
+                    <th>{{val}}</th>
+                    {% endfor %}
+                  </tr>
+                </thead>
+                <tbody>
+                    {% for entry in data %}
+                    <tr>
+                        <td>{{ forloop.counter }}.</td>
+                        {% for key,val in headers.items %}
+                        {% if key in safe_fields %}
+                          <td>{% gettatts entry key True %}</td>
+                        {% else %}
+                          <td>{% gettatts entry key %}</td>
+                        {% endif %}
+                        {% endfor %}
+                      </tr>
+                    {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      
+</div>
+{% endblock %}

@@ -1,0 +1,89 @@
+{% extends 'account/base.html' %}
+{% load static %}
+{% block mainpanel %}
+<div class="content-wrapper">
+    <div class="col-lg-12 grid-margin stretch-card">
+        <div class="col-md-6 col-sm-11 grid-margin stretch-card ">
+            <div class="card">
+              <div class="card-body">
+                <div class="media">
+                  <div class="media-body">
+                    <p class="card-text">
+                        <h6>Assignment  </h6>
+                        <p>
+                            <span>{{assignment}}</span>
+                            {% if assignment.last_date < date %}
+                            <span class="text-danger">submission closed</span>
+                            {% endif %}
+                        </p>
+                    </p>
+                    <p class="card-text">
+                        <h6>Description  </h6>
+                        <p>{{assignment.description}}</p>
+                    </p>
+                    <p class="card-text">
+                        <h6>Question  </h6>
+                        <p>{{assignment.question}}</p>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        <div class="col-md-6 col-sm-12 grid-margin stretch-card ">
+            <div class="card">
+              <div class="card-body">
+                <div class="media">
+                  <div class="media-body">
+                    <p class="card-text">
+                        <h6>Depatment  </h6>
+                        <p>{{assignment.depatment}}</p>
+                    </p>
+                    <p class="card-text">
+                        <h6>Subject  </h6>
+                        <p>{{assignment.subject}}</p>
+                    </p>
+                    <p class="card-text">
+                        <h6>Total Marks  </h6>
+                        <p>{{assignment.total_marks}}</p>
+                    </p>
+                    <p class="card-text">
+                        <h6>Lastdate  </h6>
+                        <p>{{assignment.last_date}}</p>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    <div class="auth-form-light text-left py-5 px-4 px-sm-5">
+        <h4>{{title}}</h4>
+        <h6 class="font-weight-light">{{description}}</h6>
+        <form method="post" class="pt-3" {% if files %} enctype="multipart/form-data" {% endif %}>
+          {% csrf_token %}
+          {% include 'includes/form.html' with form=form %}
+          <div class="mt-3">
+            <button type="submit" class="btn btn-primary mr-2">Submit</button>
+            <button type="reset" class="btn btn-light">Reset</button>
+            </div>
+        </form>
+      </div>
+</div>
+{% endblock %}
+{% block javascript %}
+<script>
+  $( document ).ready(function() {
+    console.log( "ready!" );
+    $('.datepicker').datepicker({
+      format: 'mm/dd/yyyy',
+      startDate: '-3d'
+  });
+});
+</script>
+{{ form.media.js }}
+  {% endblock %}
+
+  {% block stylesheet %}
+  {{ form.media.css }}
+  {% endblock %}

@@ -1,0 +1,51 @@
+version: "3"
+volumes:
+  elasticsearch-data:
+  node_modules:
+networks:
+  elastic:
+services:
+  db:
+    image: postgres
+    volumes:
+      - ./sql:/docker-entrypoint-initdb.d
+      - ./data/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - listen_addresses="*"
+    container_name: db
+    networks:
+      - elastic
+  web:
+    build:
+      context: ./assignment_management
+    command: python manage.py runserver 0:8000
+    volumes:
+      - ./assignment_management:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - redis
+    stdin_open: true   # Add this line into your service
+    tty: true
+    container_name: django
+    networks:
+      - elastic
+  redis:
+    container_name: redis
+    image: redis:alpine
+    networks:
+      - elastic
+  pgadmin:
+    image: adminer:4.7.6-standalone
+    restart: always
+    depends_on:
+        - db
+    container_name: adminer
+    ports:
+        - "8081:8080"
+    networks:
+      - elastic

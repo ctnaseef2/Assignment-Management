@@ -1,0 +1,132 @@
+{% extends 'account/base.html' %}
+{% load static templatetags %}
+{% block mainpanel %}
+<div class="content-wrapper">
+    <div class="col-lg-12 grid-margin stretch-card">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title">{{title}}</h4>
+            <div class="table-responsive">
+            </div>
+          </div>
+        </div>
+    </div>
+    <div class="col-lg-12 grid-margin stretch-card">
+        <div class="col-md-6 col-sm-11 grid-margin stretch-card ">
+            <div class="card">
+              <div class="card-body">
+                <h4 class="card-title">Submitted By</h4>
+                <div class="media">
+                  <i class="mdi mdi-account-multiple icon-md text-info d-flex align-self-start mr-3"></i>
+                  <div class="media-body">
+                    <p class="card-text">
+                        <h6>Name  </h6>
+                        <p>{{assignment.student}}</p>
+                    </p>
+                    <p class="card-text">
+                        <h6>Register Number  </h6>
+                        <p>{{assignment.student.students.register_number}}</p>
+                    </p>
+                    <p class="card-text">
+                        <h6>Dapartment  </h6>
+                        <p>{{assignment.student.students.department}}</p>
+                    </p>
+                    <p class="card-text">
+                        <h6>Semester  </h6>
+                        <p>{{assignment.student.students.semester}}</p>
+                    </p>
+                    <p class="card-text">
+                        <h6>Year  </h6>
+                        <p>{{assignment.student.students.academic_year}}</p>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        <div class="col-md-6 col-sm-12 grid-margin stretch-card ">
+            <div class="card">
+              <div class="card-body">
+                <h4 class="card-title">Assignment Details</h4>
+                <div class="media">
+                  <i class="ti-world icon-md text-info d-flex align-self-start mr-3"></i>
+                  <div class="media-body">
+                    <p class="card-text">
+                        <h6>Assignment  </h6>
+                        <p>
+                            <span>{{assignment.assignment}}</span>
+                            {% if assignment.assignment.last_date < date %}
+                            <span class="text-danger">submission closed</span>
+                            {% endif %}
+                        </p>
+                    </p>
+                    <p class="card-text">
+                        <h6>Description  </h6>
+                        <p>{{assignment.assignment.description}}</p>
+                    </p>
+                    <p class="card-text">
+                        <h6>Question  </h6>
+                        <p>{{assignment.assignment.question}}</p>
+                    </p>
+                    <p class="card-text">
+                        <h6>Depatment  </h6>
+                        <p>{{assignment.assignment.depatment}}</p>
+                    </p>
+                    <p class="card-text">
+                        <h6>Subject  </h6>
+                        <p>{{assignment.assignment.subject}}</p>
+                    </p>
+                    <p class="card-text">
+                        <h6>Total Marks  </h6>
+                        <p>{{assignment.assignment.total_marks}}</p>
+                    </p>
+                    <p class="card-text">
+                        <h6>Lastdate  </h6>
+                        <p>{{assignment.assignment.last_date}}</p>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-12 grid-margin stretch-card">
+            <div class="col-md-12  grid-margin stretch-card">
+            
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">Answer</h4>
+                  <div class="media">
+                    {{assignment.answer}}
+                  </div>
+                  {% if assignment.staus != 0 %}
+                        {% if assignment.comments %}
+                        <p class="card-text">
+                            <h6>Comment  </h6>
+                            <p>{{assignment.comments}}</p>
+                        </p>
+                        {% endif %}
+                        <p class="card-text">
+                            <h6>Mark  </h6>
+                            <p>{{assignment.total_mark}}</p>
+                        </p>
+                  {% endif %}
+                  <a target="_blank" type="button" class="btn btn-primary my-4" href="{{MEDIA_URL}}{{ assignment.file }}">View Doc</a>
+                </div>
+              </div>
+            </div>
+        </div>
+        {% if assignment.status == 0  and perms.accounts.staff_permissions %}
+        <div class="auth-form-light text-left px-sm-5">
+            <form method="post" class="pt-3" {% if files %} enctype="multipart/form-data" {% endif %}>
+              {% csrf_token %}
+              {% include 'includes/form.html' with form=form %}
+              <div class="mt-3">
+                <button type="submit" name="operation" value="submit" class="btn btn-primary mr-2">Submit</button>
+                <button type="submit" value="reject" name="operation" class="btn btn-danger">Reject</button>
+                </div>
+            </form>
+          </div>
+          {% endif %}
+</div>
+{% endblock %}
