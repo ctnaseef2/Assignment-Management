@@ -24,6 +24,7 @@ class AssignmentForm(forms.ModelForm):
         model=Assignmets
         exclude=('user','status','created','updated')
 class SubmissionForm(forms.ModelForm):
+    answer=forms.CharField(widget=forms.Textarea(),required=True)
     class Meta:
         model=AssignmentSubmissions
         fields=('answer','file')

@@ -278,3 +278,7 @@ class ViewDepartmentSubjects(View):
                 'title':"Department"
             }
         return render(request, 'account/table.html', context)
+def page_not_found_view(request, exception):
+    return render(request, '404.html', status=404)
+def error_view(request):
+    return render(request, '404.html', status=500)

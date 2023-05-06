@@ -9,6 +9,7 @@ import datetime
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from django.shortcuts import get_object_or_404
 
 # Create your views here.
 @method_decorator(login_required, name='dispatch')
@@ -71,10 +72,14 @@ class ViewAssignment(View):
         if request.user.has_perm('accounts.staff_permissions'):
             assignmets=Assignmets.objects.filter(user=request.user).all()
         else:
-            assignmets=Assignmets.objects.all()
+            assignmets=Assignmets.objects.filter(depatment=request.user.students.department).all()
         for assignmet in assignmets:
             if request.user.has_perm('accounts.students_permissions'):
-                assignmet.actions="<a href='{}' class='px-1'>Submit</a>".format(reverse('submit',kwargs={'id':assignmet.pk}))
+                assignmet.actions="<a href='{}' class='px-1'>Submit Answer</a>".format(reverse('submit',kwargs={'id':assignmet.pk}))
+                if AssignmentSubmissions.objects.filter(student=request.user,assignment=assignmet).exists():
+                    assignmet.actions="Already Submitted"
+                elif assignmet.last_date<datetime.date.today():
+                    assignmet.actions="Submission Closed"
             else:
                 assignmet.actions="<a href='{}' class='px-1'>Edit</a>".format(reverse('edit_assignments',kwargs={'id':assignmet.pk}))
         context={
@@ -111,7 +116,9 @@ class ViewAssignmentSubmissions(View):
 class SubmitAssignment(View):
     assignment=None
     def dispatch(self, request, *args, **kwargs):
-        self.assignment=Assignmets.objects.get(id=kwargs.get("id"))
+        self.assignment=get_object_or_404(Assignmets,id=kwargs.get("id"),depatment=request.user.students.department)
+        if self.assignment.last_date<datetime.date.today() or AssignmentSubmissions.objects.filter(student=request.user,assignment=self.assignment).exists():
+            return redirect('home')
         return super().dispatch(request, *args, **kwargs)
     def get(self,request, *args, **kwargs):
         form = SubmissionForm()

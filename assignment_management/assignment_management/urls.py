@@ -23,6 +23,8 @@ from django.contrib.auth import views as auth_views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('accounts.urls')),
-    path('assignment', include('assignments.urls')),
+    path('assignment/', include('assignments.urls')),
     path("select2/", include("django_select2.urls")),
 ]+ static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
+handler404 = "accounts.views.page_not_found_view"
+handler500 = "accounts.views.error_view"
